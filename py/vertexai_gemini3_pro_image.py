@@ -79,7 +79,7 @@ class SFVertexAINanaBananaPro:
                 "model": (
                     cls.MODELS,
                     {
-                        "default": "gemini-2.5-flash-image",
+                        "default": "gemini-3-pro-image-preview",
                         "tooltip": "Nano Banana (2.5 flash, stable, 1K only) or Nano Banana Pro (3 pro, preview, up to 4K)",
                     },
                 ),
