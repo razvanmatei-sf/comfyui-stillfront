@@ -109,12 +109,9 @@ class SFVertexAINanaBananaProEdit:
                     },
                 ),
                 "inputcount": (
-                    "INT",
+                    [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
                     {
-                        "default": 3,
-                        "min": 1,
-                        "max": 14,
-                        "step": 1,
+                        "default": 4,
                         "tooltip": "Number of image input slots (click 'Update inputs' button after changing)",
                     },
                 ),
@@ -123,6 +120,7 @@ class SFVertexAINanaBananaProEdit:
             "optional": {
                 "image_2": ("IMAGE", {"tooltip": "Input image 2"}),
                 "image_3": ("IMAGE", {"tooltip": "Input image 3"}),
+                "image_4": ("IMAGE", {"tooltip": "Input image 4"}),
             },
         }
 
