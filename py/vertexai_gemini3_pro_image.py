@@ -1,5 +1,5 @@
-# ABOUTME: Vertex AI Gemini 3 Pro Image (Nano Banana Pro) text-to-image generation node
-# ABOUTME: Generates images from text prompts using Google's Gemini 3 Pro Image model
+# ABOUTME: Vertex AI Nano Banana Pro (Gemini 3 Pro Image) text-to-image generation node
+# ABOUTME: Generates images from text prompts using Google's Nano Banana Pro model
 
 import asyncio
 import io
@@ -14,14 +14,13 @@ from PIL import Image
 from .vertexai_utils import base64_to_tensor, pil_to_base64, tensor_to_pil
 
 
-class SFVertexAIGemini3ProImage:
+class SFVertexAINanaBananaPro:
     """
-    Generates images from text prompts using Google Vertex AI Gemini 3 Pro Image.
+    Generates images from text prompts using Google Vertex AI Nano Banana Pro.
 
-    Also known as Gemini 3 Pro (with Nano Banana), this model combines
-    state-of-the-art reasoning capabilities with image generation.
-    Supports up to 14 input images for editing/reference and can generate
-    images up to 4096px.
+    Also known as Gemini 3 Pro Image, this model combines state-of-the-art
+    reasoning capabilities with image generation. Supports up to 14 input
+    images for editing/reference and can generate images up to 4096px.
     """
 
     # Supported aspect ratios
@@ -57,8 +56,8 @@ class SFVertexAIGemini3ProImage:
                     "STRING",
                     {
                         "multiline": False,
-                        "default": "us-central1",
-                        "tooltip": "Google Cloud region (use 'global' for Gemini models)",
+                        "default": "global",
+                        "tooltip": "Google Cloud region (use 'global' for Gemini/Nano Banana models)",
                     },
                 ),
                 "prompt": (
@@ -187,7 +186,7 @@ class SFVertexAIGemini3ProImage:
                         image_tensors.append(base64_to_tensor(pil_to_base64(pil_image)))
                     except (ValueError, AttributeError) as e:
                         print(
-                            f"[SF VertexAI Gemini 3 Pro Image] Skipping image that could not be decoded: {e}"
+                            f"[SF VertexAI Nano Banana Pro] Skipping image that could not be decoded: {e}"
                         )
                         continue
 
@@ -205,8 +204,6 @@ class SFVertexAIGemini3ProImage:
 
 
 # Node registration
-NODE_CLASS_MAPPINGS = {"SFVertexAIGemini3ProImage": SFVertexAIGemini3ProImage}
+NODE_CLASS_MAPPINGS = {"SFVertexAINanaBananaPro": SFVertexAINanaBananaPro}
 
-NODE_DISPLAY_NAME_MAPPINGS = {
-    "SFVertexAIGemini3ProImage": "SF VertexAI Gemini 3 Pro Image"
-}
+NODE_DISPLAY_NAME_MAPPINGS = {"SFVertexAINanaBananaPro": "SF VertexAI Nano Banana Pro"}

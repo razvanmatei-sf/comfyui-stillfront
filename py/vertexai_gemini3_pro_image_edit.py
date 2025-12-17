@@ -1,5 +1,5 @@
-# ABOUTME: Vertex AI Gemini 3 Pro Image (Nano Banana Pro) image editing node
-# ABOUTME: Edits images using text instructions with Google's Gemini 3 Pro Image model
+# ABOUTME: Vertex AI Nano Banana Pro (Gemini 3 Pro Image) image editing node
+# ABOUTME: Edits images using text instructions with Google's Nano Banana Pro model
 
 import asyncio
 import io
@@ -14,13 +14,13 @@ from PIL import Image
 from .vertexai_utils import base64_to_tensor, pil_to_base64, tensor_to_pil
 
 
-class SFVertexAIGemini3ProImageEdit:
+class SFVertexAINanaBananaProEdit:
     """
-    Edits images using text instructions with Google Vertex AI Gemini 3 Pro Image.
+    Edits images using text instructions with Google Vertex AI Nano Banana Pro.
 
-    Also known as Gemini 3 Pro (with Nano Banana), this model combines
-    state-of-the-art reasoning capabilities with image editing.
-    Supports multi-turn conversational editing and can output images up to 4096px.
+    Also known as Gemini 3 Pro Image, this model combines state-of-the-art
+    reasoning capabilities with image editing. Supports multi-turn
+    conversational editing and can output images up to 4096px.
     """
 
     # Supported aspect ratios
@@ -56,8 +56,8 @@ class SFVertexAIGemini3ProImageEdit:
                     "STRING",
                     {
                         "multiline": False,
-                        "default": "us-central1",
-                        "tooltip": "Google Cloud region (use 'global' for Gemini models)",
+                        "default": "global",
+                        "tooltip": "Google Cloud region (use 'global' for Gemini/Nano Banana models)",
                     },
                 ),
                 "image": (
@@ -184,7 +184,7 @@ class SFVertexAIGemini3ProImageEdit:
                         image_tensors.append(base64_to_tensor(pil_to_base64(pil_image)))
                     except (ValueError, AttributeError) as e:
                         print(
-                            f"[SF VertexAI Gemini 3 Pro Image Edit] Skipping image that could not be decoded: {e}"
+                            f"[SF VertexAI Nano Banana Pro Edit] Skipping image that could not be decoded: {e}"
                         )
                         continue
 
@@ -202,8 +202,8 @@ class SFVertexAIGemini3ProImageEdit:
 
 
 # Node registration
-NODE_CLASS_MAPPINGS = {"SFVertexAIGemini3ProImageEdit": SFVertexAIGemini3ProImageEdit}
+NODE_CLASS_MAPPINGS = {"SFVertexAINanaBananaProEdit": SFVertexAINanaBananaProEdit}
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "SFVertexAIGemini3ProImageEdit": "SF VertexAI Gemini 3 Pro Image Edit"
+    "SFVertexAINanaBananaProEdit": "SF VertexAI Nano Banana Pro Edit"
 }
