@@ -120,7 +120,6 @@ class SFVertexAINanaBananaProEdit:
             "optional": {
                 "image_2": ("IMAGE", {"tooltip": "Input image 2"}),
                 "image_3": ("IMAGE", {"tooltip": "Input image 3"}),
-                "image_4": ("IMAGE", {"tooltip": "Input image 4"}),
             },
         }
 
