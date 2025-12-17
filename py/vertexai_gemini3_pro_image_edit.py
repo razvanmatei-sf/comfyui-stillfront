@@ -1,33 +1,30 @@
 # ABOUTME: Vertex AI Nano Banana (Gemini Image) image editing node
 # ABOUTME: Edits images using text instructions with Google's Nano Banana Pro or Nano Banana models
 
-import asyncio
 import io
-import random
 
+import numpy as np
 import torch
 from google import genai
 from google.genai import types
 from google.genai.types import Part
 from PIL import Image
 
-from .vertexai_utils import base64_to_tensor, pil_to_base64, tensor_to_pil
-
 
 class SFVertexAINanaBananaProEdit:
     """
     Edits images using text instructions with Google Vertex AI Nano Banana models.
 
-    - Nano Banana Pro (gemini-3-pro-image-preview): Up to 4096px, best quality, preview
-    - Nano Banana (gemini-2.5-flash-image): Up to 1024px, faster, stable
+    - Nano Banana Pro (gemini-3-pro-image-preview): Up to 4096px (4K), best quality, preview
+    - Nano Banana (gemini-2.5-flash-image): Up to 1024px (1K), faster, stable
 
-    Supports multi-turn conversational editing.
+    Supports multi-turn conversational editing with reference images.
     """
 
     # Available models
     MODELS = [
-        "gemini-2.5-flash-image",  # Nano Banana - stable, 1024px
-        "gemini-3-pro-image-preview",  # Nano Banana Pro - preview, 4096px
+        "gemini-2.5-flash-image",  # Nano Banana - stable, 1024px max
+        "gemini-3-pro-image-preview",  # Nano Banana Pro - preview, 4096px max
     ]
 
     # Supported aspect ratios
@@ -44,8 +41,12 @@ class SFVertexAINanaBananaProEdit:
         "21:9",
     ]
 
-    def __init__(self):
-        self.client = None
+    # Supported image sizes (Nano Banana Pro supports all, Nano Banana only 1K)
+    IMAGE_SIZES = [
+        "1K",
+        "2K",
+        "4K",
+    ]
 
     @classmethod
     def INPUT_TYPES(cls):
@@ -83,7 +84,7 @@ class SFVertexAINanaBananaProEdit:
                     cls.MODELS,
                     {
                         "default": "gemini-2.5-flash-image",
-                        "tooltip": "Nano Banana (2.5 flash, stable, 1024px) or Nano Banana Pro (3 pro, preview, 4096px)",
+                        "tooltip": "Nano Banana (2.5 flash, stable, 1K only) or Nano Banana Pro (3 pro, preview, up to 4K)",
                     },
                 ),
                 "aspect_ratio": (
@@ -93,14 +94,21 @@ class SFVertexAINanaBananaProEdit:
                         "tooltip": "Output image aspect ratio",
                     },
                 ),
+                "image_size": (
+                    cls.IMAGE_SIZES,
+                    {
+                        "default": "1K",
+                        "tooltip": "Output image size. Nano Banana only supports 1K. Nano Banana Pro supports 1K/2K/4K.",
+                    },
+                ),
                 "seed": (
                     "INT",
                     {
-                        "default": random.randint(0, 2147483647),
+                        "default": 0,
                         "min": 0,
                         "max": 2147483647,
                         "control_after_generate": True,
-                        "tooltip": "Random seed for reproducible results",
+                        "tooltip": "Random seed for reproducible results (0 for random)",
                     },
                 ),
             },
@@ -114,12 +122,29 @@ class SFVertexAINanaBananaProEdit:
             },
         }
 
-    RETURN_TYPES = ("IMAGE", "STRING")
-    RETURN_NAMES = ("edited_image", "text_response")
+    RETURN_TYPES = ("IMAGE", "STRING", "STRING")
+    RETURN_NAMES = ("edited_image", "text_response", "thoughts")
     FUNCTION = "edit"
     CATEGORY = "Stillfront/VertexAI"
 
-    async def edit(
+    def _tensor_to_pil(self, tensor):
+        """Convert a ComfyUI tensor to PIL Image."""
+        if tensor is None:
+            return None
+        image_np = tensor.squeeze().cpu().numpy()
+        if image_np.max() <= 1.0:
+            image_np = (image_np * 255).astype(np.uint8)
+        else:
+            image_np = image_np.astype(np.uint8)
+        return Image.fromarray(image_np)
+
+    def _pil_to_tensor(self, pil_image):
+        """Convert PIL Image to ComfyUI tensor (RGB, not RGBA)."""
+        pil_image = pil_image.convert("RGB")
+        image_array = np.array(pil_image).astype(np.float32) / 255.0
+        return torch.from_numpy(image_array)[None,]
+
+    def edit(
         self,
         project_id,
         location,
@@ -127,6 +152,7 @@ class SFVertexAINanaBananaProEdit:
         edit_instruction,
         model,
         aspect_ratio,
+        image_size,
         seed,
         reference_image=None,
     ):
@@ -138,17 +164,21 @@ class SFVertexAINanaBananaProEdit:
         if not edit_instruction.strip():
             raise ValueError("edit_instruction cannot be empty")
 
-        # Initialize the client if needed
-        if self.client is None:
-            self.client = genai.Client(
-                vertexai=True, project=project_id, location=location
+        # Validate image_size for Nano Banana (only supports 1K)
+        if model == "gemini-2.5-flash-image" and image_size != "1K":
+            print(
+                f"[SF VertexAI Nano Banana Pro Edit] Warning: Nano Banana (gemini-2.5-flash-image) only supports 1K. Falling back to 1K."
             )
+            image_size = "1K"
+
+        # Initialize the client
+        client = genai.Client(vertexai=True, project=project_id, location=location)
 
         # Build contents - images first, then edit instruction
         contents = []
 
         # Add the main image to edit
-        pil_img = tensor_to_pil(image)
+        pil_img = self._tensor_to_pil(image)
         img_byte_arr = io.BytesIO()
         pil_img.save(img_byte_arr, format="PNG")
         img_bytes = img_byte_arr.getvalue()
@@ -156,7 +186,7 @@ class SFVertexAINanaBananaProEdit:
 
         # Add optional reference image
         if reference_image is not None:
-            ref_pil_img = tensor_to_pil(reference_image)
+            ref_pil_img = self._tensor_to_pil(reference_image)
             ref_byte_arr = io.BytesIO()
             ref_pil_img.save(ref_byte_arr, format="PNG")
             ref_bytes = ref_byte_arr.getvalue()
@@ -165,39 +195,58 @@ class SFVertexAINanaBananaProEdit:
         # Add the edit instruction
         contents.append(edit_instruction)
 
-        # Build configuration
+        # Build image configuration
+        image_config = types.ImageConfig(
+            aspect_ratio=aspect_ratio,
+            image_size=image_size,
+        )
+
+        # Build generation configuration
         config = types.GenerateContentConfig(
             response_modalities=["TEXT", "IMAGE"],
             candidate_count=1,
-            seed=seed,
+            seed=seed if seed > 0 else None,
+            image_config=image_config,
         )
 
         # Call the Gemini API
         try:
-            response = await asyncio.to_thread(
-                self.client.models.generate_content,
+            response = client.models.generate_content(
                 model=model,
                 contents=contents,
                 config=config,
             )
         except Exception as e:
-            raise RuntimeError(f"Nano Banana Edit API call failed: {str(e)}")
+            raise RuntimeError(f"Nano Banana Edit API call failed ({model}): {str(e)}")
 
-        # Process response - extract both images and text
+        # Check finish reason for errors
+        if response.candidates and response.candidates[0].finish_reason:
+            finish_reason = response.candidates[0].finish_reason
+            if finish_reason != types.FinishReason.STOP:
+                raise ValueError(
+                    f"Generation stopped due to: {finish_reason}. Try rephrasing your edit instruction."
+                )
+
+        # Process response - extract images, text, and thoughts
         image_tensors = []
         text_parts = []
+        thought_parts = []
 
         for candidate in response.candidates:
             for part in candidate.content.parts:
+                # Check if this is a thought
+                if hasattr(part, "thought") and part.thought:
+                    if part.text:
+                        thought_parts.append(part.text)
+                    continue
+
                 if part.text:
                     text_parts.append(part.text)
                 elif part.inline_data:
                     try:
-                        pil_image = Image.open(
-                            io.BytesIO(part.inline_data.data)
-                        ).convert("RGBA")
-                        image_tensors.append(base64_to_tensor(pil_to_base64(pil_image)))
-                    except (ValueError, AttributeError) as e:
+                        pil_image = Image.open(io.BytesIO(part.inline_data.data))
+                        image_tensors.append(self._pil_to_tensor(pil_image))
+                    except (ValueError, AttributeError, OSError) as e:
                         print(
                             f"[SF VertexAI Nano Banana Pro Edit] Skipping image that could not be decoded: {e}"
                         )
@@ -205,15 +254,17 @@ class SFVertexAINanaBananaProEdit:
 
         # Combine text responses
         text_response = "\n".join(text_parts) if text_parts else ""
+        thoughts = "\n".join(thought_parts) if thought_parts else ""
 
         if not image_tensors:
             raise ValueError(
-                "No valid images were returned by the API. Your request was likely blocked by the safety filters or the model chose to respond with text only. Try rephrasing your edit instruction."
+                "No valid images were returned by the API. Your request was likely blocked by safety filters "
+                "or the model chose to respond with text only. Try rephrasing your edit instruction."
             )
 
         # Stack all images into a batch tensor
         batch_tensor = torch.cat(image_tensors, 0)
-        return (batch_tensor, text_response)
+        return (batch_tensor, text_response, thoughts)
 
 
 # Node registration
