@@ -1,7 +1,7 @@
 from .wavespeed_api.utils import imageurl2tensor
 from .wavespeed_api.client import WaveSpeedClient
 
-class GoogleNanoBananaEditNode:
+class SFWaveSpeedNanoBananaEdit:
     """
     Google Nano Banana Edit Node
     
@@ -44,7 +44,7 @@ class GoogleNanoBananaEditNode:
     RETURN_TYPES = ("IMAGE",)
     RETURN_NAMES = ("image",)
     
-    CATEGORY = "WaveSpeedAI"
+    CATEGORY = "Stillfront/WaveSpeed"
     FUNCTION = "execute"
     
     def execute(self, client, prompt, image_url, output_format="png", 
@@ -141,9 +141,9 @@ class GoogleNanoBananaEditNode:
 
 # Node registration
 NODE_CLASS_MAPPINGS = {
-    "WaveSpeedAI Google Nano Banana Edit": GoogleNanoBananaEditNode
+    "SFWaveSpeedNanoBananaEdit": SFWaveSpeedNanoBananaEdit
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "WaveSpeedAI Google Nano Banana Edit": "WaveSpeedAI Google Nano Banana Edit"
+    "SFWaveSpeedNanoBananaEdit": "SF WaveSpeed Nano Banana Edit"
 }

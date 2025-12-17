@@ -2,7 +2,7 @@ import time
 from .wavespeed_api.utils import imageurl2tensor
 from .wavespeed_api.client import WaveSpeedClient
 
-class FluxControlNetUnionPro2:
+class SFWaveSpeedFluxControlNetUnionPro2:
     """
     Flux ControlNet Union Pro 2.0 Node
 
@@ -111,7 +111,7 @@ class FluxControlNetUnionPro2:
     RETURN_TYPES = ("IMAGE",)
     RETURN_NAMES = ("output_image",)
 
-    CATEGORY = "WaveSpeedAI"
+    CATEGORY = "Stillfront/WaveSpeed"
     FUNCTION = "execute"
 
     def execute(self, client, prompt, control_image, size="1024*1024",
@@ -230,9 +230,9 @@ class FluxControlNetUnionPro2:
 
 # Node registration
 NODE_CLASS_MAPPINGS = {
-    "WaveSpeedAI Flux ControlNet Union Pro 2.0": FluxControlNetUnionPro2
+    "SFWaveSpeedFluxControlNetUnionPro2": SFWaveSpeedFluxControlNetUnionPro2
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "WaveSpeedAI Flux ControlNet Union Pro 2.0": "WaveSpeedAI Flux ControlNet Union Pro 2.0"
+    "SFWaveSpeedFluxControlNetUnionPro2": "SF WaveSpeed Flux ControlNet Union Pro 2"
 }

@@ -2,7 +2,7 @@ import time
 from .wavespeed_api.utils import imageurl2tensor
 from .wavespeed_api.client import WaveSpeedClient
 
-class WAN25TextToImage:
+class SFWaveSpeedWan25TextToImage:
     @classmethod
     def INPUT_TYPES(s):
         return {
@@ -44,7 +44,7 @@ class WAN25TextToImage:
 
     RETURN_TYPES = ("IMAGE",)
     RETURN_NAMES = ("output_image",)
-    CATEGORY = "WaveSpeedAI"
+    CATEGORY = "Stillfront/WaveSpeed"
     FUNCTION = "execute"
 
     def execute(self, client, prompt, size="1024*1024", negative_prompt="",
@@ -100,9 +100,9 @@ class WAN25TextToImage:
 
 # Node registration
 NODE_CLASS_MAPPINGS = {
-    "WaveSpeedAI WAN 2.5 Text-to-Image": WAN25TextToImage
+    "SFWaveSpeedWan25TextToImage": SFWaveSpeedWan25TextToImage
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "WaveSpeedAI WAN 2.5 Text-to-Image": "WaveSpeedAI WAN 2.5 Text-to-Image"
+    "SFWaveSpeedWan25TextToImage": "SF WaveSpeed Wan 2.5 Text to Image"
 }

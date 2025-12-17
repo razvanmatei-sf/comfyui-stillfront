@@ -3,7 +3,7 @@ from .wavespeed_api.utils import imageurl2tensor
 from .wavespeed_api.client import WaveSpeedClient
 
 
-class BytedanceSeedreamV4EditSequential:
+class SFWaveSpeedSeedreamV4EditSequential:
     # Recommended resolution presets for ByteDance Seedream V4
     RECOMMENDED_PRESETS_SEEDREAM_4 = [
         ("2048x2048 (1:1)", 2048, 2048),
@@ -97,7 +97,7 @@ class BytedanceSeedreamV4EditSequential:
 
     RETURN_TYPES = ("IMAGE",)
     RETURN_NAMES = ("output_images",)
-    CATEGORY = "WaveSpeedAI"
+    CATEGORY = "Stillfront/WaveSpeed"
     FUNCTION = "execute"
 
     def execute(self, client, prompt, max_images, size_preset, seed, enable_sync_mode,
@@ -174,9 +174,9 @@ class BytedanceSeedreamV4EditSequential:
 
 # Node registration - REQUIRED
 NODE_CLASS_MAPPINGS = {
-    "WaveSpeedAI Bytedance Seedream V4 Edit Sequential": BytedanceSeedreamV4EditSequential
+    "SFWaveSpeedSeedreamV4EditSequential": SFWaveSpeedSeedreamV4EditSequential
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "WaveSpeedAI Bytedance Seedream V4 Edit Sequential": "WaveSpeedAI Bytedance Seedream V4 Edit Sequential"
+    "SFWaveSpeedSeedreamV4EditSequential": "SF WaveSpeed Seedream V4 Edit Sequential"
 }

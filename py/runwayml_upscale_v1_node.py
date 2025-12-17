@@ -1,7 +1,7 @@
 import time
 from .wavespeed_api.client import WaveSpeedClient
 
-class RunwaymlUpscaleV1Node:
+class SFWaveSpeedRunwayUpscale:
     """
     WaveSpeed AI RunwayML Upscale V1 Node
 
@@ -28,7 +28,7 @@ class RunwaymlUpscaleV1Node:
 
     RETURN_TYPES = ("STRING",)
     RETURN_NAMES = ("upscaled_video_url",)
-    CATEGORY = "WaveSpeedAI"
+    CATEGORY = "Stillfront/WaveSpeed"
     FUNCTION = "execute"
 
     def execute(self, client, video_url, enable_sync_mode):
@@ -86,7 +86,7 @@ class RunwaymlUpscaleV1Node:
 
 # Add the mappings that your __init__.py file will automatically find
 NODE_CLASS_MAPPINGS = {
-    "WaveSpeedAI_RunwaymlUpscaleV1Node": RunwaymlUpscaleV1Node
+    "SFWaveSpeedRunwayUpscale": SFWaveSpeedRunwayUpscale
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {

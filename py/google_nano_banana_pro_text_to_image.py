@@ -4,7 +4,7 @@ from .wavespeed_api.client import WaveSpeedClient
 from .wavespeed_api.utils import imageurl2tensor
 
 
-class GoogleNanoBananaProTextToImage:
+class SFWaveSpeedNanoBananaProTextToImage:
     """
     Google Nano Banana Pro Text-to-Image (Gemini 3.0 Pro Image)
 
@@ -77,7 +77,7 @@ class GoogleNanoBananaProTextToImage:
 
     RETURN_TYPES = ("IMAGE",)
     RETURN_NAMES = ("output_image",)
-    CATEGORY = "WaveSpeedAI/Google"
+    CATEGORY = "Stillfront/WaveSpeed"
     FUNCTION = "execute"
 
     def execute(
@@ -133,9 +133,9 @@ class GoogleNanoBananaProTextToImage:
 
 
 NODE_CLASS_MAPPINGS = {
-    "WaveSpeedAI Google Nano Banana Pro Text to Image": GoogleNanoBananaProTextToImage
+    "SFWaveSpeedNanoBananaProTextToImage": SFWaveSpeedNanoBananaProTextToImage
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "WaveSpeedAI Google Nano Banana Pro Text to Image": "WaveSpeedAI Google Nano Banana Pro T2I"
+    "SFWaveSpeedNanoBananaProTextToImage": "SF WaveSpeed Nano Banana Pro Text to Image"
 }

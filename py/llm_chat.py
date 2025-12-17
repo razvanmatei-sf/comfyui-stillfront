@@ -246,7 +246,7 @@ def call_gemini_api(
 
 
 # ComfyUI Node Class
-class RazvLLMChat:
+class SFLLMChat:
     @classmethod
     def INPUT_TYPES(cls):
         return {
@@ -288,7 +288,7 @@ class RazvLLMChat:
     RETURN_TYPES = ("STRING",)
     RETURN_NAMES = ("response",)
     FUNCTION = "chat"
-    CATEGORY = "Razv LLM"
+    CATEGORY = "Stillfront/LLM"
 
     def chat(
         self,
@@ -354,9 +354,9 @@ class RazvLLMChat:
 
 # Node registration
 NODE_CLASS_MAPPINGS = {
-    "RazvLLMChat": RazvLLMChat,
+    "SFLLMChat": SFLLMChat,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "RazvLLMChat": "Razv LLM Chat",
+    "SFLLMChat": "SF LLM Chat",
 }

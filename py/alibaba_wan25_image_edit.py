@@ -9,7 +9,7 @@ from .wavespeed_api.utils import imageurl2tensor
 from .wavespeed_api.client import WaveSpeedClient
 
 
-class AlibabaWan25ImageEdit:
+class SFWaveSpeedWan25ImageEdit:
     """
     Alibaba Wan 2.5 Image Edit node
     Preserves layout and subject structure while implementing high-quality updates based on natural language
@@ -87,7 +87,7 @@ class AlibabaWan25ImageEdit:
 
     RETURN_TYPES = ("IMAGE",)
     RETURN_NAMES = ("output_image",)
-    CATEGORY = "WaveSpeedAI/Alibaba"
+    CATEGORY = "Stillfront/WaveSpeed"
     FUNCTION = "execute"
 
     def execute(self, client, prompt, image_1, size="1024x1024 (1:1)", seed=-1,
@@ -194,9 +194,9 @@ class AlibabaWan25ImageEdit:
 
 # Node registration - REQUIRED
 NODE_CLASS_MAPPINGS = {
-    "WaveSpeedAI Alibaba Wan 2.5 Image Edit": AlibabaWan25ImageEdit
+    "SFWaveSpeedWan25ImageEdit": SFWaveSpeedWan25ImageEdit
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "WaveSpeedAI Alibaba Wan 2.5 Image Edit": "WaveSpeedAI Alibaba Wan 2.5 Image Edit"
+    "SFWaveSpeedWan25ImageEdit": "SF WaveSpeed Wan 2.5 Image Edit"
 }

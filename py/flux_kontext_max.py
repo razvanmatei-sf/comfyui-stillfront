@@ -2,7 +2,7 @@ import time
 from .wavespeed_api.utils import imageurl2tensor
 from .wavespeed_api.client import WaveSpeedClient
 
-class FluxKontextMaxNode:
+class SFWaveSpeedFluxKontextMax:
     """
     Flux Kontext Max Node
 
@@ -47,7 +47,7 @@ class FluxKontextMaxNode:
     RETURN_TYPES = ("IMAGE",)
     RETURN_NAMES = ("output_image",)
 
-    CATEGORY = "WaveSpeedAI"
+    CATEGORY = "Stillfront/WaveSpeed"
     FUNCTION = "execute"
 
     def execute(self, client, prompt, image_url, guidance_scale=3.5, safety_tolerance="2",
@@ -128,9 +128,9 @@ class FluxKontextMaxNode:
 
 # Node registration
 NODE_CLASS_MAPPINGS = {
-    "WaveSpeedAI Flux Kontext Max": FluxKontextMaxNode
+    "SFWaveSpeedFluxKontextMax": SFWaveSpeedFluxKontextMax
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "WaveSpeedAI Flux Kontext Max": "WaveSpeedAI Flux Kontext Max"
+    "SFWaveSpeedFluxKontextMax": "SF WaveSpeed Flux Kontext Max"
 }

@@ -1,7 +1,7 @@
 import time
 from .wavespeed_api.client import WaveSpeedClient
 
-class WAN25ImageToVideoFast:
+class SFWaveSpeedWan25ImageToVideoFast:
     @classmethod
     def INPUT_TYPES(s):
         return {
@@ -56,7 +56,7 @@ class WAN25ImageToVideoFast:
 
     RETURN_TYPES = ("STRING",)
     RETURN_NAMES = ("video_url",)
-    CATEGORY = "WaveSpeedAI"
+    CATEGORY = "Stillfront/WaveSpeed"
     FUNCTION = "execute"
 
     def execute(self, client, image, prompt, resolution, negative_prompt="", audio="",
@@ -120,9 +120,9 @@ class WAN25ImageToVideoFast:
 
 # Node registration
 NODE_CLASS_MAPPINGS = {
-    "WaveSpeedAI WAN 2.5 Image-to-Video Fast": WAN25ImageToVideoFast
+    "SFWaveSpeedWan25ImageToVideoFast": SFWaveSpeedWan25ImageToVideoFast
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "WaveSpeedAI WAN 2.5 Image-to-Video Fast": "WaveSpeedAI WAN 2.5 Image-to-Video Fast"
+    "SFWaveSpeedWan25ImageToVideoFast": "SF WaveSpeed Wan 2.5 Image to Video Fast"
 }

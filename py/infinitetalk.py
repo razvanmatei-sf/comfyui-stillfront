@@ -3,7 +3,7 @@ from .wavespeed_api.utils import imageurl2tensor
 from .wavespeed_api.client import WaveSpeedClient
 
 
-class InfiniteTalk:
+class SFWaveSpeedInfiniteTalk:
     """
     WaveSpeed AI InfiniteTalk Node
 
@@ -66,7 +66,7 @@ class InfiniteTalk:
 
     RETURN_TYPES = ("STRING",)
     RETURN_NAMES = ("video_url",)
-    CATEGORY = "WaveSpeedAI"
+    CATEGORY = "Stillfront/WaveSpeed"
     FUNCTION = "execute"
 
     def execute(self, client, audio, image, resolution, enable_sync_mode,
@@ -153,9 +153,9 @@ class InfiniteTalk:
 
 # Node registration - REQUIRED
 NODE_CLASS_MAPPINGS = {
-    "WaveSpeedAI InfiniteTalk": InfiniteTalk
+    "SFWaveSpeedInfiniteTalk": SFWaveSpeedInfiniteTalk
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "WaveSpeedAI InfiniteTalk": "WaveSpeedAI InfiniteTalk"
+    "SFWaveSpeedInfiniteTalk": "SF WaveSpeed InfiniteTalk"
 }

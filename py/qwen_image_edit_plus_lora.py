@@ -3,7 +3,7 @@ from .wavespeed_api.utils import imageurl2tensor
 from .wavespeed_api.client import WaveSpeedClient
 
 
-class QwenImageEditPlusLora:
+class SFWaveSpeedQwenEditPlusLora:
     # Resolution presets with aspect ratios (max 1536 pixels per dimension)
     RESOLUTION_MAP = {
         "1328x1328 (1:1)": (1328, 1328),
@@ -107,7 +107,7 @@ class QwenImageEditPlusLora:
 
     RETURN_TYPES = ("IMAGE",)
     RETURN_NAMES = ("output_image",)
-    CATEGORY = "WaveSpeedAI"
+    CATEGORY = "Stillfront/WaveSpeed"
     FUNCTION = "execute"
 
     def execute(self, client, prompt="", image_url_1="", image_url_2="", image_url_3="",
@@ -217,9 +217,9 @@ class QwenImageEditPlusLora:
 
 # Node registration
 NODE_CLASS_MAPPINGS = {
-    "WaveSpeedAI Qwen Image Edit Plus LoRA": QwenImageEditPlusLora
+    "SFWaveSpeedQwenEditPlusLora": SFWaveSpeedQwenEditPlusLora
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "WaveSpeedAI Qwen Image Edit Plus LoRA": "WaveSpeedAI Qwen Image Edit Plus LoRA"
+    "SFWaveSpeedQwenEditPlusLora": "SF WaveSpeed Qwen Edit Plus LoRA"
 }

@@ -2,7 +2,7 @@ import time
 from .wavespeed_api.utils import imageurl2tensor
 from .wavespeed_api.client import WaveSpeedClient
 
-class FluxKontextProNode:
+class SFWaveSpeedFluxKontextPro:
     """
     Flux Kontext Pro Node
 
@@ -43,7 +43,7 @@ class FluxKontextProNode:
     RETURN_TYPES = ("IMAGE",)
     RETURN_NAMES = ("output_image",)
 
-    CATEGORY = "WaveSpeedAI"
+    CATEGORY = "Stillfront/WaveSpeed"
     FUNCTION = "execute"
 
     def execute(self, client, prompt, image_url, guidance_scale=3.5, enable_sync_mode=True):
@@ -121,9 +121,9 @@ class FluxKontextProNode:
 
 # Node registration
 NODE_CLASS_MAPPINGS = {
-    "WaveSpeedAI Flux Kontext Pro": FluxKontextProNode
+    "SFWaveSpeedFluxKontextPro": SFWaveSpeedFluxKontextPro
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "WaveSpeedAI Flux Kontext Pro": "WaveSpeedAI Flux Kontext Pro"
+    "SFWaveSpeedFluxKontextPro": "SF WaveSpeed Flux Kontext Pro"
 }

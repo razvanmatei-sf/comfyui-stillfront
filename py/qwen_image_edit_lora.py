@@ -2,7 +2,7 @@ import time
 from .wavespeed_api.utils import imageurl2tensor
 from .wavespeed_api.client import WaveSpeedClient
 
-class QwenImageEditLoraNode:
+class SFWaveSpeedQwenEditLora:
     """
     Qwen Image Edit with LoRA Node
 
@@ -71,7 +71,7 @@ class QwenImageEditLoraNode:
     RETURN_TYPES = ("IMAGE",)
     RETURN_NAMES = ("output_image",)
 
-    CATEGORY = "WaveSpeedAI"
+    CATEGORY = "Stillfront/WaveSpeed"
     FUNCTION = "execute"
 
     def execute(self, client, prompt, image_url, seed=-1, output_format="jpeg",
@@ -172,9 +172,9 @@ class QwenImageEditLoraNode:
 
 # Node registration
 NODE_CLASS_MAPPINGS = {
-    "WaveSpeedAI Qwen Image Edit LoRA": QwenImageEditLoraNode
+    "SFWaveSpeedQwenEditLora": SFWaveSpeedQwenEditLora
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "WaveSpeedAI Qwen Image Edit LoRA": "WaveSpeedAI Qwen Image Edit LoRA"
+    "SFWaveSpeedQwenEditLora": "SF WaveSpeed Qwen Edit LoRA"
 }

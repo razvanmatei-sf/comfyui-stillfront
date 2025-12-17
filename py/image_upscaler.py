@@ -2,7 +2,7 @@ import time
 from .wavespeed_api.utils import imageurl2tensor
 from .wavespeed_api.client import WaveSpeedClient
 
-class ImageUpscalerNode:
+class SFWaveSpeedImageUpscaler:
     """
     WaveSpeed AI Image Upscaler Node
 
@@ -45,7 +45,7 @@ class ImageUpscalerNode:
 
     RETURN_TYPES = ("IMAGE",)
     RETURN_NAMES = ("upscaled_image",)
-    CATEGORY = "WaveSpeedAI"
+    CATEGORY = "Stillfront/WaveSpeed"
     FUNCTION = "execute"
 
     def execute(self, client, image_url, target_resolution="4k", creativity=0.0,
@@ -121,9 +121,9 @@ class ImageUpscalerNode:
 
 # Node registration
 NODE_CLASS_MAPPINGS = {
-    "WaveSpeedAI Image Upscaler": ImageUpscalerNode
+    "SFWaveSpeedImageUpscaler": SFWaveSpeedImageUpscaler
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "WaveSpeedAI Image Upscaler": "WaveSpeedAI Image Upscaler"
+    "SFWaveSpeedImageUpscaler": "SF WaveSpeed Image Upscaler"
 }

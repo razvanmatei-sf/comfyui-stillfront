@@ -1,7 +1,7 @@
 import time
 from .wavespeed_api.client import WaveSpeedClient
 
-class WaveSpeedAIWAN22Animate:
+class SFWaveSpeedWan22Animate:
     @classmethod
     def INPUT_TYPES(s):
         return {
@@ -44,7 +44,7 @@ class WaveSpeedAIWAN22Animate:
 
     RETURN_TYPES = ("STRING",)
     RETURN_NAMES = ("video_url",)
-    CATEGORY = "WaveSpeedAI"
+    CATEGORY = "Stillfront/WaveSpeed"
     FUNCTION = "execute"
 
     def execute(self, client, image_url, video_url, resolution, enable_sync_mode, prompt="", seed=-1):
@@ -112,9 +112,9 @@ class WaveSpeedAIWAN22Animate:
 
 # Node registration - REQUIRED
 NODE_CLASS_MAPPINGS = {
-    "WaveSpeedAI WAN 2.2 Animate": WaveSpeedAIWAN22Animate
+    "SFWaveSpeedWan22Animate": SFWaveSpeedWan22Animate
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "WaveSpeedAI WAN 2.2 Animate": "WaveSpeedAI WAN 2.2 Animate"
+    "SFWaveSpeedWan22Animate": "SF WaveSpeed Wan 2.2 Animate"
 }

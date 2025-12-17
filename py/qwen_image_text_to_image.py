@@ -2,7 +2,7 @@ import time
 from .wavespeed_api.utils import imageurl2tensor
 from .wavespeed_api.client import WaveSpeedClient
 
-class QwenImageTextToImageNode:
+class SFWaveSpeedQwenTextToImage:
     """
     Qwen Image Text-to-Image Node
     
@@ -63,7 +63,7 @@ class QwenImageTextToImageNode:
     RETURN_TYPES = ("IMAGE",)
     RETURN_NAMES = ("image",)
     
-    CATEGORY = "WaveSpeedAI"
+    CATEGORY = "Stillfront/WaveSpeed"
     FUNCTION = "execute"
     
     def execute(self, client, prompt, size="1328x1328 (1:1)", seed=-1,
@@ -160,7 +160,7 @@ class QwenImageTextToImageNode:
 
 # Node registration
 NODE_CLASS_MAPPINGS = {
-    "WaveSpeedAI Qwen Image Text to Image": QwenImageTextToImageNode
+    "SFWaveSpeedQwenTextToImage": SFWaveSpeedQwenTextToImage
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {

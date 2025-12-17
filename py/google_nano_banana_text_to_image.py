@@ -3,7 +3,7 @@ from .wavespeed_api.utils import imageurl2tensor
 from .wavespeed_api.client import WaveSpeedClient
 
 
-class GoogleNanoBananaTextToImage:
+class SFWaveSpeedNanoBananaTextToImage:
     @classmethod
     def INPUT_TYPES(s):
         return {
@@ -34,7 +34,7 @@ class GoogleNanoBananaTextToImage:
 
     RETURN_TYPES = ("IMAGE",)
     RETURN_NAMES = ("output_image",)
-    CATEGORY = "WaveSpeedAI"
+    CATEGORY = "Stillfront/WaveSpeed"
     FUNCTION = "execute"
 
     def execute(self, client, prompt, seed, output_format, enable_sync_mode):
@@ -83,9 +83,9 @@ class GoogleNanoBananaTextToImage:
 
 
 NODE_CLASS_MAPPINGS = {
-    "WaveSpeedAI Google Nano Banana Text to Image": GoogleNanoBananaTextToImage
+    "SFWaveSpeedNanoBananaTextToImage": SFWaveSpeedNanoBananaTextToImage
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "WaveSpeedAI Google Nano Banana Text to Image": "WaveSpeedAI Google Nano Banana Text-to-Image"
+    "SFWaveSpeedNanoBananaTextToImage": "SF WaveSpeed Nano Banana Text to Image"
 }

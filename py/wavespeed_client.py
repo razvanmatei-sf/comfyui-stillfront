@@ -1,8 +1,10 @@
-import os
 import configparser
+import os
+
 from .wavespeed_api.client import WaveSpeedClient
 
-class WaveSpeedAIAPIClient:
+
+class SFWaveSpeedClient:
     """
     WaveSpeed AI API Client Node
 
@@ -25,7 +27,7 @@ class WaveSpeedAIAPIClient:
 
     FUNCTION = "create_client"
 
-    CATEGORY = "WaveSpeedAI"
+    CATEGORY = "Stillfront/WaveSpeed"
 
     def create_client(self, api_key):
         """
@@ -38,42 +40,38 @@ class WaveSpeedAIAPIClient:
             WaveSpeedAPI: WaveSpeed AI API client
         """
         wavespeed_api_key = ""
-        
+
         if api_key == "":
             # Try to read from config.ini
             try:
                 current_dir = os.path.dirname(os.path.abspath(__file__))
                 parent_dir = os.path.dirname(current_dir)
-                config_path = os.path.join(parent_dir, 'config.ini')
-                
+                config_path = os.path.join(parent_dir, "config.ini")
+
                 if os.path.exists(config_path):
                     config = configparser.ConfigParser()
                     config.read(config_path)
-                    wavespeed_api_key = config.get('API', 'api_key', fallback='')
-                    
+                    wavespeed_api_key = config.get("API", "api_key", fallback="")
+
                 if not wavespeed_api_key:
                     # Try environment variable
-                    wavespeed_api_key = os.environ.get('WAVESPEED_API_KEY', '')
-                    
+                    wavespeed_api_key = os.environ.get("WAVESPEED_API_KEY", "")
+
                 if not wavespeed_api_key:
-                    raise ValueError('API_KEY is empty. Please provide an API key or set it in config.ini')
+                    raise ValueError(
+                        "API_KEY is empty. Please provide an API key or set it in config.ini"
+                    )
 
             except Exception as e:
-                raise ValueError(f'Unable to find API_KEY: {str(e)}')
+                raise ValueError(f"Unable to find API_KEY: {str(e)}")
 
         else:
             wavespeed_api_key = api_key
 
-        return ({
-            "api_key": wavespeed_api_key
-        },)
+        return ({"api_key": wavespeed_api_key},)
 
 
 # Node registration
-NODE_CLASS_MAPPINGS = {
-    "WaveSpeedAI Client": WaveSpeedAIAPIClient
-}
+NODE_CLASS_MAPPINGS = {"SFWaveSpeedClient": SFWaveSpeedClient}
 
-NODE_DISPLAY_NAME_MAPPINGS = {
-    "WaveSpeedAI Client": "WaveSpeedAI Client"
-}
+NODE_DISPLAY_NAME_MAPPINGS = {"SFWaveSpeedClient": "SF WaveSpeed Client"}

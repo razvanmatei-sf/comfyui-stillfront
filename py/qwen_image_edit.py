@@ -2,7 +2,7 @@ import time
 from .wavespeed_api.utils import imageurl2tensor
 from .wavespeed_api.client import WaveSpeedClient
 
-class QwenImageEditNode:
+class SFWaveSpeedQwenEdit:
     """
     Qwen Image Edit Node
     
@@ -47,7 +47,7 @@ class QwenImageEditNode:
     RETURN_TYPES = ("IMAGE",)
     RETURN_NAMES = ("image",)
     
-    CATEGORY = "WaveSpeedAI"
+    CATEGORY = "Stillfront/WaveSpeed"
     FUNCTION = "execute"
     
     def execute(self, client, prompt, image_url, seed=-1, output_format="jpeg", 
@@ -135,9 +135,9 @@ class QwenImageEditNode:
 
 # Node registration
 NODE_CLASS_MAPPINGS = {
-    "WaveSpeedAI Qwen Image Edit": QwenImageEditNode
+    "SFWaveSpeedQwenEdit": SFWaveSpeedQwenEdit
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "WaveSpeedAI Qwen Image Edit": "WaveSpeedAI Qwen Image Edit"
+    "SFWaveSpeedQwenEdit": "SF WaveSpeed Qwen Edit"
 }

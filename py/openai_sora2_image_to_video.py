@@ -1,7 +1,7 @@
 import time
 from .wavespeed_api.client import WaveSpeedClient
 
-class OpenAISora2ImageToVideo:
+class SFWaveSpeedSora2ImageToVideo:
     """
     OpenAI Sora 2 Image-to-Video Node
 
@@ -40,7 +40,7 @@ class OpenAISora2ImageToVideo:
 
     RETURN_TYPES = ("STRING",)
     RETURN_NAMES = ("video_url",)
-    CATEGORY = "WaveSpeedAI/OpenAI Sora 2"
+    CATEGORY = "Stillfront/WaveSpeed"
     FUNCTION = "execute"
 
     def execute(self, client, image, prompt, duration=4, enable_sync_mode=False):
@@ -109,9 +109,9 @@ class OpenAISora2ImageToVideo:
 
 # Node registration
 NODE_CLASS_MAPPINGS = {
-    "WaveSpeedAI OpenAI Sora 2 Image-to-Video": OpenAISora2ImageToVideo
+    "SFWaveSpeedSora2ImageToVideo": SFWaveSpeedSora2ImageToVideo
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "WaveSpeedAI OpenAI Sora 2 Image-to-Video": "WaveSpeedAI OpenAI Sora 2 Image-to-Video"
+    "SFWaveSpeedSora2ImageToVideo": "SF WaveSpeed Sora 2 Image to Video"
 }

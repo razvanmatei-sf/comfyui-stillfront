@@ -4,7 +4,7 @@ from .wavespeed_api.client import WaveSpeedClient
 from .wavespeed_api.utils import imageurl2tensor
 
 
-class GoogleNanoBananaProEditMulti:
+class SFWaveSpeedNanoBananaProEditMulti:
     """
     Google Nano Banana Pro Edit Multi (Gemini 3.0 Pro Image)
 
@@ -121,7 +121,7 @@ class GoogleNanoBananaProEditMulti:
 
     RETURN_TYPES = ("IMAGE",)
     RETURN_NAMES = ("output_images",)
-    CATEGORY = "WaveSpeedAI/Google"
+    CATEGORY = "Stillfront/WaveSpeed"
     FUNCTION = "execute"
 
     def execute(
@@ -197,9 +197,9 @@ class GoogleNanoBananaProEditMulti:
 
 
 NODE_CLASS_MAPPINGS = {
-    "WaveSpeedAI Google Nano Banana Pro Edit Multi": GoogleNanoBananaProEditMulti
+    "SFWaveSpeedNanoBananaProEditMulti": SFWaveSpeedNanoBananaProEditMulti
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "WaveSpeedAI Google Nano Banana Pro Edit Multi": "WaveSpeedAI Google Nano Banana Pro Edit Multi"
+    "SFWaveSpeedNanoBananaProEditMulti": "SF WaveSpeed Nano Banana Pro Edit Multi"
 }

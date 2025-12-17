@@ -3,7 +3,7 @@ import json
 from .wavespeed_api.utils import imageurl2tensor
 from .wavespeed_api.client import WaveSpeedClient
 
-class QwenImageTextToImageLoraNode:
+class SFWaveSpeedQwenTextToImageLora:
     """
     Qwen Image Text-to-Image with LoRA Node
 
@@ -87,7 +87,7 @@ class QwenImageTextToImageLoraNode:
     RETURN_TYPES = ("IMAGE",)
     RETURN_NAMES = ("output_image",)
 
-    CATEGORY = "WaveSpeedAI"
+    CATEGORY = "Stillfront/WaveSpeed"
     FUNCTION = "execute"
 
     def execute(self, client, prompt, size="1:1 (Square)", seed=-1,
@@ -205,7 +205,7 @@ class QwenImageTextToImageLoraNode:
 
 # Node registration
 NODE_CLASS_MAPPINGS = {
-    "WaveSpeedAI Qwen Image Text to Image LoRA": QwenImageTextToImageLoraNode
+    "SFWaveSpeedQwenTextToImageLora": SFWaveSpeedQwenTextToImageLora
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {

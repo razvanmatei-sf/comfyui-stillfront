@@ -1,7 +1,7 @@
 import time
 from .wavespeed_api.client import WaveSpeedClient
 
-class Wan2x2I2V720pNode:
+class SFWaveSpeedWan22I2V720p:
     """
     WaveSpeed AI Wan 2.2 I2V 720p Node
 
@@ -57,7 +57,7 @@ class Wan2x2I2V720pNode:
 
     RETURN_TYPES = ("STRING",)
     RETURN_NAMES = ("video_url",)
-    CATEGORY = "WaveSpeedAI"
+    CATEGORY = "Stillfront/WaveSpeed"
     FUNCTION = "execute"
 
     def execute(self, client, image_url, prompt, duration, enable_sync_mode,
@@ -129,7 +129,7 @@ class Wan2x2I2V720pNode:
 
 # Add the mappings that your __init__.py file will automatically find
 NODE_CLASS_MAPPINGS = {
-    "WaveSpeedAI_Wan22I2V720pNode": Wan2x2I2V720pNode
+    "SFWaveSpeedWan22I2V720p": SFWaveSpeedWan22I2V720p
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {

@@ -1,7 +1,7 @@
 import time
 from .wavespeed_api.client import WaveSpeedClient
 
-class GoogleVeo31FastTextToVideo:
+class SFWaveSpeedVeo31FastTextToVideo:
     """
     Google VEO 3.1 Fast Text-to-Video Node
 
@@ -58,7 +58,7 @@ class GoogleVeo31FastTextToVideo:
 
     RETURN_TYPES = ("STRING",)
     RETURN_NAMES = ("video_url",)
-    CATEGORY = "WaveSpeedAI/Google VEO 3.1"
+    CATEGORY = "Stillfront/WaveSpeed"
     FUNCTION = "execute"
 
     def execute(self, client, prompt, aspect_ratio="16:9", duration=8, resolution="1080p",
@@ -141,9 +141,9 @@ class GoogleVeo31FastTextToVideo:
 
 # Node registration
 NODE_CLASS_MAPPINGS = {
-    "WaveSpeedAI Google VEO 3.1 Fast Text-to-Video": GoogleVeo31FastTextToVideo
+    "SFWaveSpeedVeo31FastTextToVideo": SFWaveSpeedVeo31FastTextToVideo
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "WaveSpeedAI Google VEO 3.1 Fast Text-to-Video": "WaveSpeedAI Google VEO 3.1 Fast Text-to-Video"
+    "SFWaveSpeedVeo31FastTextToVideo": "SF WaveSpeed VEO 3.1 Fast Text to Video"
 }

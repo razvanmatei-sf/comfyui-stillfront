@@ -3,7 +3,8 @@ Dynamic Prompt List Node
 A ComfyUI custom node with dynamic text box count for managing prompt lists.
 """
 
-class DynamicPromptList:
+
+class SFPromptList:
     """
     Dynamic prompt list node with configurable number of text boxes.
     Returns a comma-separated string of all prompts.
@@ -20,14 +21,17 @@ class DynamicPromptList:
 
         # Add all 50 prompts to INPUT_TYPES so ComfyUI creates proper text boxes
         for i in range(1, 51):
-            inputs["required"][f"prompt_{i}"] = ("STRING", {"multiline": True, "default": ""})
+            inputs["required"][f"prompt_{i}"] = (
+                "STRING",
+                {"multiline": True, "default": ""},
+            )
 
         return inputs
 
     RETURN_TYPES = ("STRING",)
     RETURN_NAMES = ("text",)
     FUNCTION = "create_prompt_list"
-    CATEGORY = "Serhii/Utils"
+    CATEGORY = "Stillfront/Utils"
 
     DESCRIPTION = """
 Creates a comma-separated list from text boxes.
@@ -63,9 +67,9 @@ Only the first 'inputcount' boxes will be visible.
 
 # Node registration
 NODE_CLASS_MAPPINGS = {
-    "Dynamic Prompt List": DynamicPromptList,
+    "SFPromptList": SFPromptList,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "Dynamic Prompt List": "Dynamic Prompt List",
+    "SFPromptList": "SF Prompt List",
 }
