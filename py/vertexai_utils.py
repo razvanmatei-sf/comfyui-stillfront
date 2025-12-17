@@ -96,3 +96,36 @@ def pil_image_to_tensor(pil_image):
     pil_image = pil_image.convert("RGBA")
     image_array = np.array(pil_image).astype(np.float32) / 255.0
     return torch.from_numpy(image_array)[None,]
+
+
+def save_video_for_preview(video_bytes, output_dir, file_path=None):
+    """
+    Saves video data and prepares it for preview in ComfyUI.
+
+    Args:
+        video_bytes (bytes): The video data.
+        output_dir (str): The directory to save the video in if no path is given.
+        file_path (str, optional): The specific file path to save the video to.
+
+    Returns:
+        dict: A dictionary containing information for the ComfyUI previewer.
+    """
+    if file_path:
+        with open(file_path, "wb") as out_file:
+            out_file.write(video_bytes)
+        return {
+            "filename": os.path.basename(file_path),
+            "subfolder": "",
+            "type": "output",
+        }
+    else:
+        with tempfile.NamedTemporaryFile(
+            suffix=".mp4", delete=False, dir=output_dir
+        ) as temp_file:
+            temp_file.write(video_bytes)
+            return {
+                "filename": os.path.basename(temp_file.name),
+                "subfolder": "",
+                "type": "output",
+                "full_path": temp_file.name,
+            }
