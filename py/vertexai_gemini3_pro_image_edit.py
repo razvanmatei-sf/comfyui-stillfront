@@ -104,7 +104,7 @@ class SFVertexAINanaBananaProEdit:
                         "default": 0,
                         "min": 0,
                         "max": 2147483647,
-                        "control_after_generate": "fixed",
+                        "control_after_generate": True,
                         "tooltip": "Random seed for reproducible results (0 for random)",
                     },
                 ),
