@@ -1,5 +1,5 @@
-# ABOUTME: Vertex AI Nano Banana Pro (Gemini 3 Pro Image) image editing node
-# ABOUTME: Edits images using text instructions with Google's Nano Banana Pro model
+# ABOUTME: Vertex AI Nano Banana (Gemini Image) image editing node
+# ABOUTME: Edits images using text instructions with Google's Nano Banana Pro or Nano Banana models
 
 import asyncio
 import io
@@ -16,12 +16,19 @@ from .vertexai_utils import base64_to_tensor, pil_to_base64, tensor_to_pil
 
 class SFVertexAINanaBananaProEdit:
     """
-    Edits images using text instructions with Google Vertex AI Nano Banana Pro.
+    Edits images using text instructions with Google Vertex AI Nano Banana models.
 
-    Also known as Gemini 3 Pro Image, this model combines state-of-the-art
-    reasoning capabilities with image editing. Supports multi-turn
-    conversational editing and can output images up to 4096px.
+    - Nano Banana Pro (gemini-3-pro-image-preview): Up to 4096px, best quality, preview
+    - Nano Banana (gemini-2.5-flash-image): Up to 1024px, faster, stable
+
+    Supports multi-turn conversational editing.
     """
+
+    # Available models
+    MODELS = [
+        "gemini-2.5-flash-image",  # Nano Banana - stable, 1024px
+        "gemini-3-pro-image-preview",  # Nano Banana Pro - preview, 4096px
+    ]
 
     # Supported aspect ratios
     ASPECT_RATIOS = [
@@ -72,6 +79,13 @@ class SFVertexAINanaBananaProEdit:
                         "tooltip": "Text instruction describing the edit to make (e.g., 'Make it look like a cartoon' or 'Change the background to a beach')",
                     },
                 ),
+                "model": (
+                    cls.MODELS,
+                    {
+                        "default": "gemini-2.5-flash-image",
+                        "tooltip": "Nano Banana (2.5 flash, stable, 1024px) or Nano Banana Pro (3 pro, preview, 4096px)",
+                    },
+                ),
                 "aspect_ratio": (
                     cls.ASPECT_RATIOS,
                     {
@@ -111,6 +125,7 @@ class SFVertexAINanaBananaProEdit:
         location,
         image,
         edit_instruction,
+        model,
         aspect_ratio,
         seed,
         reference_image=None,
@@ -161,12 +176,12 @@ class SFVertexAINanaBananaProEdit:
         try:
             response = await asyncio.to_thread(
                 self.client.models.generate_content,
-                model="gemini-3-pro-image-preview",
+                model=model,
                 contents=contents,
                 config=config,
             )
         except Exception as e:
-            raise RuntimeError(f"Gemini 3 Pro Image Edit API call failed: {str(e)}")
+            raise RuntimeError(f"Nano Banana Edit API call failed: {str(e)}")
 
         # Process response - extract both images and text
         image_tensors = []
