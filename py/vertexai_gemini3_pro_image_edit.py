@@ -19,7 +19,7 @@ class SFVertexAINanaBananaProEdit:
     - Nano Banana (gemini-2.5-flash-image): Up to 1024px (1K), faster, stable
 
     Supports up to 14 input images for editing, style transfer, and combining elements.
-    Dynamic inputs: connect an image and a new slot appears automatically.
+    Use the image_count dropdown and "Update inputs" button to add more image slots.
     """
 
     # Available models
@@ -108,12 +108,31 @@ class SFVertexAINanaBananaProEdit:
                         "tooltip": "Random seed for reproducible results (0 for random)",
                     },
                 ),
+                "image_count": (
+                    "INT",
+                    {
+                        "default": 3,
+                        "min": 1,
+                        "max": 14,
+                        "tooltip": "Number of image input slots (click 'Update inputs' button after changing)",
+                    },
+                ),
             },
             "optional": {
-                "image_1": (
-                    "IMAGE",
-                    {"tooltip": "Input image 1 (connect to add more slots)"},
-                ),
+                "image_1": ("IMAGE", {"tooltip": "Input image 1"}),
+                "image_2": ("IMAGE", {"tooltip": "Input image 2"}),
+                "image_3": ("IMAGE", {"tooltip": "Input image 3"}),
+                "image_4": ("IMAGE", {"tooltip": "Input image 4"}),
+                "image_5": ("IMAGE", {"tooltip": "Input image 5"}),
+                "image_6": ("IMAGE", {"tooltip": "Input image 6"}),
+                "image_7": ("IMAGE", {"tooltip": "Input image 7"}),
+                "image_8": ("IMAGE", {"tooltip": "Input image 8"}),
+                "image_9": ("IMAGE", {"tooltip": "Input image 9"}),
+                "image_10": ("IMAGE", {"tooltip": "Input image 10"}),
+                "image_11": ("IMAGE", {"tooltip": "Input image 11"}),
+                "image_12": ("IMAGE", {"tooltip": "Input image 12"}),
+                "image_13": ("IMAGE", {"tooltip": "Input image 13"}),
+                "image_14": ("IMAGE", {"tooltip": "Input image 14"}),
             },
         }
 
@@ -148,7 +167,21 @@ class SFVertexAINanaBananaProEdit:
         aspect_ratio,
         image_size,
         seed,
-        **kwargs,
+        image_count,
+        image_1=None,
+        image_2=None,
+        image_3=None,
+        image_4=None,
+        image_5=None,
+        image_6=None,
+        image_7=None,
+        image_8=None,
+        image_9=None,
+        image_10=None,
+        image_11=None,
+        image_12=None,
+        image_13=None,
+        image_14=None,
     ):
         if not project_id:
             raise ValueError(
@@ -158,11 +191,26 @@ class SFVertexAINanaBananaProEdit:
         if not edit_instruction.strip():
             raise ValueError("edit_instruction cannot be empty")
 
-        # Collect all image inputs from kwargs (image_1, image_2, etc.)
-        images = []
-        for key in sorted(kwargs.keys()):
-            if key.startswith("image_") and kwargs[key] is not None:
-                images.append(kwargs[key])
+        # Collect all image inputs
+        all_images = [
+            image_1,
+            image_2,
+            image_3,
+            image_4,
+            image_5,
+            image_6,
+            image_7,
+            image_8,
+            image_9,
+            image_10,
+            image_11,
+            image_12,
+            image_13,
+            image_14,
+        ]
+
+        # Filter to only include provided images
+        images = [img for img in all_images if img is not None]
 
         if not images:
             raise ValueError("At least one image input is required for editing")
