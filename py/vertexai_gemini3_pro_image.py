@@ -197,16 +197,18 @@ class SFVertexAINanaBananaPro:
         # Add the text prompt
         contents.append(prompt)
 
-        # Build generation configuration with image config as dict
+        # Build generation configuration
+        # Note: aspect_ratio and image_size are passed via prompt instructions
+        # as the SDK doesn't support image_config parameter directly
         config = GenerateContentConfig(
             response_modalities=["TEXT", "IMAGE"],
             candidate_count=1,
             seed=seed if seed > 0 else None,
-            image_config={
-                "aspect_ratio": aspect_ratio,
-                "image_size": image_size,
-            },
         )
+
+        # Prepend aspect ratio and size instructions to the prompt
+        size_instruction = f"Generate the image with aspect ratio {aspect_ratio} and resolution {image_size}."
+        contents[-1] = f"{size_instruction} {prompt}"
 
         # Call the Gemini API
         try:

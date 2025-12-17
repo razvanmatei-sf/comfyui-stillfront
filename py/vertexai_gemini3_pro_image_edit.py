@@ -192,18 +192,17 @@ class SFVertexAINanaBananaProEdit:
             ref_bytes = ref_byte_arr.getvalue()
             contents.append(Part.from_bytes(data=ref_bytes, mime_type="image/png"))
 
-        # Add the edit instruction
-        contents.append(edit_instruction)
+        # Add the edit instruction with aspect ratio and size hints
+        # Note: aspect_ratio and image_size are passed via prompt instructions
+        # as the SDK doesn't support image_config parameter directly
+        size_instruction = f"Generate the image with aspect ratio {aspect_ratio} and resolution {image_size}."
+        contents.append(f"{size_instruction} {edit_instruction}")
 
-        # Build generation configuration with image config as dict
+        # Build generation configuration
         config = GenerateContentConfig(
             response_modalities=["TEXT", "IMAGE"],
             candidate_count=1,
             seed=seed if seed > 0 else None,
-            image_config={
-                "aspect_ratio": aspect_ratio,
-                "image_size": image_size,
-            },
         )
 
         # Call the Gemini API
