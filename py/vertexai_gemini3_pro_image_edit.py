@@ -19,6 +19,7 @@ class SFVertexAINanaBananaProEdit:
     - Nano Banana (gemini-2.5-flash-image): Up to 1024px (1K), faster, stable
 
     Supports up to 14 input images for editing, style transfer, and combining elements.
+    Dynamic inputs: connect an image and a new slot appears automatically.
     """
 
     # Available models
@@ -68,10 +69,6 @@ class SFVertexAINanaBananaProEdit:
                         "tooltip": "Google Cloud region (use 'global' for Gemini/Nano Banana models)",
                     },
                 ),
-                "image": (
-                    "IMAGE",
-                    {"tooltip": "Input image to edit"},
-                ),
                 "edit_instruction": (
                     "STRING",
                     {
@@ -113,19 +110,10 @@ class SFVertexAINanaBananaProEdit:
                 ),
             },
             "optional": {
-                "image2": ("IMAGE", {"tooltip": "Optional input image 2"}),
-                "image3": ("IMAGE", {"tooltip": "Optional input image 3"}),
-                "image4": ("IMAGE", {"tooltip": "Optional input image 4"}),
-                "image5": ("IMAGE", {"tooltip": "Optional input image 5"}),
-                "image6": ("IMAGE", {"tooltip": "Optional input image 6"}),
-                "image7": ("IMAGE", {"tooltip": "Optional input image 7"}),
-                "image8": ("IMAGE", {"tooltip": "Optional input image 8"}),
-                "image9": ("IMAGE", {"tooltip": "Optional input image 9"}),
-                "image10": ("IMAGE", {"tooltip": "Optional input image 10"}),
-                "image11": ("IMAGE", {"tooltip": "Optional input image 11"}),
-                "image12": ("IMAGE", {"tooltip": "Optional input image 12"}),
-                "image13": ("IMAGE", {"tooltip": "Optional input image 13"}),
-                "image14": ("IMAGE", {"tooltip": "Optional input image 14"}),
+                "image_1": (
+                    "IMAGE",
+                    {"tooltip": "Input image 1 (connect to add more slots)"},
+                ),
             },
         }
 
@@ -155,25 +143,12 @@ class SFVertexAINanaBananaProEdit:
         self,
         project_id,
         location,
-        image,
         edit_instruction,
         model,
         aspect_ratio,
         image_size,
         seed,
-        image2=None,
-        image3=None,
-        image4=None,
-        image5=None,
-        image6=None,
-        image7=None,
-        image8=None,
-        image9=None,
-        image10=None,
-        image11=None,
-        image12=None,
-        image13=None,
-        image14=None,
+        **kwargs,
     ):
         if not project_id:
             raise ValueError(
@@ -182,6 +157,15 @@ class SFVertexAINanaBananaProEdit:
 
         if not edit_instruction.strip():
             raise ValueError("edit_instruction cannot be empty")
+
+        # Collect all image inputs from kwargs (image_1, image_2, etc.)
+        images = []
+        for key in sorted(kwargs.keys()):
+            if key.startswith("image_") and kwargs[key] is not None:
+                images.append(kwargs[key])
+
+        if not images:
+            raise ValueError("At least one image input is required for editing")
 
         # Validate image_size for Nano Banana (only supports 1K)
         if model == "gemini-2.5-flash-image" and image_size != "1K":
@@ -196,32 +180,13 @@ class SFVertexAINanaBananaProEdit:
         # Build contents - images first, then edit instruction
         contents = []
 
-        # Collect all images (up to 14)
-        all_images = [
-            image,
-            image2,
-            image3,
-            image4,
-            image5,
-            image6,
-            image7,
-            image8,
-            image9,
-            image10,
-            image11,
-            image12,
-            image13,
-            image14,
-        ]
-
-        # Add all provided images
-        for img_tensor in all_images:
-            if img_tensor is not None:
-                pil_img = self._tensor_to_pil(img_tensor)
-                img_byte_arr = io.BytesIO()
-                pil_img.save(img_byte_arr, format="PNG")
-                img_bytes = img_byte_arr.getvalue()
-                contents.append(Part.from_bytes(data=img_bytes, mime_type="image/png"))
+        # Add all provided images (up to 14)
+        for img_tensor in images[:14]:
+            pil_img = self._tensor_to_pil(img_tensor)
+            img_byte_arr = io.BytesIO()
+            pil_img.save(img_byte_arr, format="PNG")
+            img_bytes = img_byte_arr.getvalue()
+            contents.append(Part.from_bytes(data=img_bytes, mime_type="image/png"))
 
         # Add the edit instruction with aspect ratio and size hints
         # Note: aspect_ratio and image_size are passed via prompt instructions
