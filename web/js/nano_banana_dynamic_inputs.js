@@ -41,6 +41,15 @@ app.registerExtension({
           (input) => input.name && input.name.startsWith("image_"),
         ).length;
 
+        // Debug logging
+        console.log(
+          `[NanaBanana] Target: ${target_number_of_inputs}, Current: ${num_inputs}`,
+        );
+        console.log(
+          `[NanaBanana] Current inputs:`,
+          this.inputs.map((i) => i.name),
+        );
+
         // Already at target, do nothing
         if (target_number_of_inputs === num_inputs) return;
 
@@ -66,8 +75,7 @@ app.registerExtension({
           }
         }
 
-        // Resize node to fit
-        this.setSize(this.computeSize());
+        // Mark canvas as dirty without resizing
         this.setDirtyCanvas(true, true);
       });
 
