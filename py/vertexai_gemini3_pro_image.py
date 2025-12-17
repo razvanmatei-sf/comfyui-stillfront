@@ -7,7 +7,7 @@ import numpy as np
 import torch
 from google import genai
 from google.genai import types
-from google.genai.types import Part
+from google.genai.types import GenerateContentConfig, Part
 from PIL import Image
 
 
@@ -197,18 +197,15 @@ class SFVertexAINanaBananaPro:
         # Add the text prompt
         contents.append(prompt)
 
-        # Build image configuration
-        image_config = types.ImageConfig(
-            aspect_ratio=aspect_ratio,
-            image_size=image_size,
-        )
-
-        # Build generation configuration
-        config = types.GenerateContentConfig(
+        # Build generation configuration with image config as dict
+        config = GenerateContentConfig(
             response_modalities=["TEXT", "IMAGE"],
             candidate_count=1,
             seed=seed if seed > 0 else None,
-            image_config=image_config,
+            image_config={
+                "aspect_ratio": aspect_ratio,
+                "image_size": image_size,
+            },
         )
 
         # Call the Gemini API
