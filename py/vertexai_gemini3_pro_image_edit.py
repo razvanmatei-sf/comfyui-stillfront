@@ -18,7 +18,7 @@ class SFVertexAINanaBananaProEdit:
     - Nano Banana Pro (gemini-3-pro-image-preview): Up to 4096px (4K), best quality, preview
     - Nano Banana (gemini-2.5-flash-image): Up to 1024px (1K), faster, stable
 
-    Supports multi-turn conversational editing with reference images.
+    Supports up to 14 input images for editing, style transfer, and combining elements.
     """
 
     # Available models
@@ -113,12 +113,19 @@ class SFVertexAINanaBananaProEdit:
                 ),
             },
             "optional": {
-                "reference_image": (
-                    "IMAGE",
-                    {
-                        "tooltip": "Optional second reference image for style transfer or combining elements",
-                    },
-                ),
+                "image2": ("IMAGE", {"tooltip": "Optional input image 2"}),
+                "image3": ("IMAGE", {"tooltip": "Optional input image 3"}),
+                "image4": ("IMAGE", {"tooltip": "Optional input image 4"}),
+                "image5": ("IMAGE", {"tooltip": "Optional input image 5"}),
+                "image6": ("IMAGE", {"tooltip": "Optional input image 6"}),
+                "image7": ("IMAGE", {"tooltip": "Optional input image 7"}),
+                "image8": ("IMAGE", {"tooltip": "Optional input image 8"}),
+                "image9": ("IMAGE", {"tooltip": "Optional input image 9"}),
+                "image10": ("IMAGE", {"tooltip": "Optional input image 10"}),
+                "image11": ("IMAGE", {"tooltip": "Optional input image 11"}),
+                "image12": ("IMAGE", {"tooltip": "Optional input image 12"}),
+                "image13": ("IMAGE", {"tooltip": "Optional input image 13"}),
+                "image14": ("IMAGE", {"tooltip": "Optional input image 14"}),
             },
         }
 
@@ -154,7 +161,19 @@ class SFVertexAINanaBananaProEdit:
         aspect_ratio,
         image_size,
         seed,
-        reference_image=None,
+        image2=None,
+        image3=None,
+        image4=None,
+        image5=None,
+        image6=None,
+        image7=None,
+        image8=None,
+        image9=None,
+        image10=None,
+        image11=None,
+        image12=None,
+        image13=None,
+        image14=None,
     ):
         if not project_id:
             raise ValueError(
@@ -177,20 +196,32 @@ class SFVertexAINanaBananaProEdit:
         # Build contents - images first, then edit instruction
         contents = []
 
-        # Add the main image to edit
-        pil_img = self._tensor_to_pil(image)
-        img_byte_arr = io.BytesIO()
-        pil_img.save(img_byte_arr, format="PNG")
-        img_bytes = img_byte_arr.getvalue()
-        contents.append(Part.from_bytes(data=img_bytes, mime_type="image/png"))
+        # Collect all images (up to 14)
+        all_images = [
+            image,
+            image2,
+            image3,
+            image4,
+            image5,
+            image6,
+            image7,
+            image8,
+            image9,
+            image10,
+            image11,
+            image12,
+            image13,
+            image14,
+        ]
 
-        # Add optional reference image
-        if reference_image is not None:
-            ref_pil_img = self._tensor_to_pil(reference_image)
-            ref_byte_arr = io.BytesIO()
-            ref_pil_img.save(ref_byte_arr, format="PNG")
-            ref_bytes = ref_byte_arr.getvalue()
-            contents.append(Part.from_bytes(data=ref_bytes, mime_type="image/png"))
+        # Add all provided images
+        for img_tensor in all_images:
+            if img_tensor is not None:
+                pil_img = self._tensor_to_pil(img_tensor)
+                img_byte_arr = io.BytesIO()
+                pil_img.save(img_byte_arr, format="PNG")
+                img_bytes = img_byte_arr.getvalue()
+                contents.append(Part.from_bytes(data=img_bytes, mime_type="image/png"))
 
         # Add the edit instruction with aspect ratio and size hints
         # Note: aspect_ratio and image_size are passed via prompt instructions
