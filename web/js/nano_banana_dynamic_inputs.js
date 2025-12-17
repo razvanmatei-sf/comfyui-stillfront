@@ -36,9 +36,9 @@ app.registerExtension({
           (w) => w.name === "inputcount",
         )["value"];
 
-        // Count current image inputs
+        // Count current image inputs (exact match for image_N pattern, not image_size etc)
         const num_inputs = this.inputs.filter(
-          (input) => input.name && input.name.startsWith("image_"),
+          (input) => input.name && /^image_\d+$/.test(input.name),
         ).length;
 
         // Debug logging
