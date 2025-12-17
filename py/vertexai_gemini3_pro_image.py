@@ -18,7 +18,7 @@ class SFVertexAINanaBananaPro:
     - Nano Banana Pro (gemini-3-pro-image-preview): Up to 4096px (4K), best quality, preview
     - Nano Banana (gemini-2.5-flash-image): Up to 1024px (1K), faster, stable
 
-    Supports up to 4 input images for editing/reference.
+    Pure text-to-image generation. For image editing, use the Edit node.
     """
 
     # Available models
@@ -108,24 +108,6 @@ class SFVertexAINanaBananaPro:
                     },
                 ),
             },
-            "optional": {
-                "image1": (
-                    "IMAGE",
-                    {"tooltip": "Optional reference/input image 1"},
-                ),
-                "image2": (
-                    "IMAGE",
-                    {"tooltip": "Optional reference/input image 2"},
-                ),
-                "image3": (
-                    "IMAGE",
-                    {"tooltip": "Optional reference/input image 3"},
-                ),
-                "image4": (
-                    "IMAGE",
-                    {"tooltip": "Optional reference/input image 4"},
-                ),
-            },
         }
 
     RETURN_TYPES = ("IMAGE", "STRING", "STRING")
@@ -159,10 +141,6 @@ class SFVertexAINanaBananaPro:
         aspect_ratio,
         image_size,
         seed,
-        image1=None,
-        image2=None,
-        image3=None,
-        image4=None,
     ):
         if not project_id:
             raise ValueError(
@@ -182,20 +160,8 @@ class SFVertexAINanaBananaPro:
         # Initialize the client
         client = genai.Client(vertexai=True, project=project_id, location=location)
 
-        # Build contents - images first, then prompt
-        contents = []
-        images = [image1, image2, image3, image4]
-
-        for img_tensor in images:
-            if img_tensor is not None:
-                pil_img = self._tensor_to_pil(img_tensor)
-                img_byte_arr = io.BytesIO()
-                pil_img.save(img_byte_arr, format="PNG")
-                img_bytes = img_byte_arr.getvalue()
-                contents.append(Part.from_bytes(data=img_bytes, mime_type="image/png"))
-
-        # Add the text prompt
-        contents.append(prompt)
+        # Build contents - just the text prompt for T2I
+        contents = [prompt]
 
         # Build generation configuration
         # Note: aspect_ratio and image_size are passed via prompt instructions
