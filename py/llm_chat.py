@@ -12,24 +12,31 @@ from torch import Tensor
 # Latest Claude models (as of 2025)
 # Note: All these models support "Extended thinking" capability for deep reasoning
 claude_models = [
-    "claude-sonnet-4-5-20250929",  # Claude Sonnet 4.5 - Latest Sonnet (Best balance of speed/cost/intelligence)
-    "claude-sonnet-4-5",  # Alias for latest Sonnet 4.5
-    "claude-opus-4-1-20250805",  # Claude Opus 4.1 - Most capable model (Best for complex tasks)
-    "claude-opus-4-1",  # Alias for latest Opus 4.1
-    "claude-haiku-4-5-20251001",  # Claude Haiku 4.5 - Fast & cost-efficient (Best for simple tasks)
-    "claude-haiku-4-5",  # Alias for latest Haiku 4.5
+    "claude-opus-4-5",  # Premium model combining maximum intelligence with practical performance
+    "claude-sonnet-4-5",  # Our best model for real-world agents and coding
+    "claude-haiku-4-5",  # Hybrid model, capable of near-instant responses and extended thinking
 ]
 
 # Google Gemini models (as of 2025)
+# Gemini 3 Series only - Latest generation
 gemini_models = [
-    "gemini-3-pro-preview",  # Gemini 3 Pro - Most intelligent, advanced reasoning (1M context)
-    "gemini-2.5-pro",  # Gemini 2.5 Pro - Capable reasoning model
-    "gemini-2.5-flash",  # Best price-performance
-    "gemini-2.5-flash-lite",  # Fastest, most cost-efficient
+    "gemini-3-pro-preview",  # Most intelligent, best for complex reasoning and analysis (1M context)
+    "gemini-3-flash-preview",  # Most balanced for speed, scale, and frontier intelligence (1M context)
+]
+
+# OpenAI GPT models (as of 2025)
+# GPT-5 Series only - Latest generation
+openai_models = [
+    "gpt-5.2",  # The best model for coding and agentic tasks across industries
+    "gpt-5.2-pro",  # Version of GPT-5.2 that produces smarter and more precise responses
+    "gpt-5",  # Intelligent reasoning model for coding and agentic tasks
+    "gpt-5-pro",  # Version of GPT-5 that produces smarter and more precise responses
+    "gpt-5-mini",  # Faster, cost-efficient version of GPT-5 for well-defined tasks
+    "gpt-5-nano",  # Fastest, most cost-efficient version of GPT-5
 ]
 
 # All available models
-all_models = claude_models + gemini_models
+all_models = claude_models + gemini_models + openai_models
 
 
 # Utility functions
@@ -252,7 +259,7 @@ class SFLLMChat:
         return {
             "required": {
                 "api_key": ("STRING", {"multiline": False}),
-                "model": (all_models, {"default": "claude-sonnet-4-5"}),
+                "model": (all_models, {"default": "claude-sonnet-4-5"}),  # Latest & best for agents/coding
                 "prompt": ("STRING", {"multiline": True}),
                 "max_tokens": ("INT", {"default": 4096, "min": 1, "max": 200000}),
                 "temperature": (
