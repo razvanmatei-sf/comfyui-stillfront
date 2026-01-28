@@ -169,11 +169,24 @@ class SFVertexAINanaBananaPro:
         if model == "gemini-3-pro-image-preview":
             image_config_kwargs["image_size"] = image_size
 
+        print(f"[SF VertexAI Nano Banana Pro] DEBUG: model={model}")
+        print(
+            f"[SF VertexAI Nano Banana Pro] DEBUG: image_config_kwargs={image_config_kwargs}"
+        )
+
+        image_config = ImageConfig(**image_config_kwargs)
+        print(
+            f"[SF VertexAI Nano Banana Pro] DEBUG: ImageConfig created: {image_config}"
+        )
+
         config = GenerateContentConfig(
             response_modalities=["TEXT", "IMAGE"],
             candidate_count=1,
             seed=seed if seed > 0 else None,
-            image_config=ImageConfig(**image_config_kwargs),
+            image_config=image_config,
+        )
+        print(
+            f"[SF VertexAI Nano Banana Pro] DEBUG: GenerateContentConfig created: {config}"
         )
 
         # Call the Gemini API
