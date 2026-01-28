@@ -7,7 +7,7 @@ import numpy as np
 import torch
 from google import genai
 from google.genai import types
-from google.genai.types import GenerateContentConfig, Part
+from google.genai.types import GenerateContentConfig, ImageConfig, Part
 from PIL import Image
 
 
@@ -163,18 +163,18 @@ class SFVertexAINanaBananaPro:
         # Build contents - just the text prompt for T2I
         contents = [prompt]
 
-        # Build generation configuration
-        # Note: aspect_ratio and image_size are passed via prompt instructions
-        # as the SDK doesn't support image_config parameter directly
+        # Build generation configuration with image_config for aspect ratio and size
+        # Note: image_size is only supported by Nano Banana Pro (gemini-3-pro-image-preview)
+        image_config_kwargs = {"aspect_ratio": aspect_ratio}
+        if model == "gemini-3-pro-image-preview":
+            image_config_kwargs["image_size"] = image_size
+
         config = GenerateContentConfig(
             response_modalities=["TEXT", "IMAGE"],
             candidate_count=1,
             seed=seed if seed > 0 else None,
+            image_config=ImageConfig(**image_config_kwargs),
         )
-
-        # Prepend aspect ratio and size instructions to the prompt
-        size_instruction = f"Generate the image with aspect ratio {aspect_ratio} and resolution {image_size}."
-        contents[-1] = f"{size_instruction} {prompt}"
 
         # Call the Gemini API
         try:

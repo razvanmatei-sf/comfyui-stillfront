@@ -7,7 +7,7 @@ import numpy as np
 import torch
 from google import genai
 from google.genai import types
-from google.genai.types import GenerateContentConfig, Part
+from google.genai.types import GenerateContentConfig, ImageConfig, Part
 from PIL import Image
 
 
@@ -199,15 +199,20 @@ class SFVertexAINanaBananaProEdit:
             img_bytes = img_byte_arr.getvalue()
             contents.append(Part.from_bytes(data=img_bytes, mime_type="image/png"))
 
-        # Add the edit instruction with aspect ratio and size hints
-        size_instruction = f"Generate the image with aspect ratio {aspect_ratio} and resolution {image_size}."
-        contents.append(f"{size_instruction} {edit_instruction}")
+        # Add the edit instruction
+        contents.append(edit_instruction)
 
-        # Build generation configuration
+        # Build generation configuration with image_config for aspect ratio and size
+        # Note: image_size is only supported by Nano Banana Pro (gemini-3-pro-image-preview)
+        image_config_kwargs = {"aspect_ratio": aspect_ratio}
+        if model == "gemini-3-pro-image-preview":
+            image_config_kwargs["image_size"] = image_size
+
         config = GenerateContentConfig(
             response_modalities=["TEXT", "IMAGE"],
             candidate_count=1,
             seed=seed if seed > 0 else None,
+            image_config=ImageConfig(**image_config_kwargs),
         )
 
         # Call the Gemini API
