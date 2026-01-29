@@ -6,7 +6,7 @@ import io
 import numpy as np
 import torch
 from google import genai
-from google.genai.types import GenerateContentConfig, ImageConfig, Modality, Part
+from google.genai import types
 from PIL import Image
 
 
@@ -188,7 +188,7 @@ class SFVertexAINanaBananaProEdit:
         client = genai.Client(vertexai=True, project=project_id, location=location)
 
         # Build contents - images first, then edit instruction
-        contents = []
+        parts = []
 
         # Add all provided images (up to 14)
         for img_tensor in images[:14]:
@@ -196,30 +196,25 @@ class SFVertexAINanaBananaProEdit:
             img_byte_arr = io.BytesIO()
             pil_img.save(img_byte_arr, format="PNG")
             img_bytes = img_byte_arr.getvalue()
-            contents.append(Part.from_bytes(data=img_bytes, mime_type="image/png"))
+            parts.append(types.Part.from_bytes(data=img_bytes, mime_type="image/png"))
 
         # Add the edit instruction
-        contents.append(edit_instruction)
+        parts.append(types.Part.from_text(text=edit_instruction))
 
-        # Build generation configuration with image_config for aspect ratio and size
+        contents = [types.Content(role="user", parts=parts)]
+
+        # Build image_config parameters
         # Note: image_size is only supported by Nano Banana Pro (gemini-3-pro-image-preview)
-        if model == "gemini-3-pro-image-preview":
-            config = GenerateContentConfig(
-                response_modalities=[Modality.TEXT, Modality.IMAGE],
-                seed=seed if seed > 0 else None,
-                image_config=ImageConfig(
-                    aspect_ratio=aspect_ratio,
-                    image_size=image_size,
-                ),
-            )
-        else:
-            config = GenerateContentConfig(
-                response_modalities=[Modality.TEXT, Modality.IMAGE],
-                seed=seed if seed > 0 else None,
-                image_config=ImageConfig(
-                    aspect_ratio=aspect_ratio,
-                ),
-            )
+        image_config_params = {"aspect_ratio": aspect_ratio}
+        if "gemini-3-pro" in model:
+            image_config_params["image_size"] = image_size
+
+        # Build generation configuration
+        config = types.GenerateContentConfig(
+            seed=seed if seed > 0 else None,
+            response_modalities=["IMAGE"],
+            image_config=types.ImageConfig(**image_config_params),
+        )
 
         # Call the Gemini API
         try:
@@ -239,44 +234,16 @@ class SFVertexAINanaBananaProEdit:
                     f"Generation stopped due to: {finish_reason}. Try rephrasing your edit instruction."
                 )
 
-        # Process response - extract images, text, and thoughts
-        image_tensors = []
-        text_parts = []
-        thought_parts = []
-
-        for candidate in response.candidates:
-            for part in candidate.content.parts:
-                # Check if this is a thought
-                if hasattr(part, "thought") and part.thought:
-                    if part.text:
-                        thought_parts.append(part.text)
-                    continue
-
-                if part.text:
-                    text_parts.append(part.text)
-                elif part.inline_data:
-                    try:
-                        pil_image = Image.open(io.BytesIO(part.inline_data.data))
-                        image_tensors.append(self._pil_to_tensor(pil_image))
-                    except (ValueError, AttributeError, OSError) as e:
-                        print(
-                            f"[SF VertexAI Nano Banana Pro Edit] Skipping image that could not be decoded: {e}"
-                        )
-                        continue
-
-        # Combine text responses
-        text_response = "\n".join(text_parts) if text_parts else ""
-        thoughts = "\n".join(thought_parts) if thought_parts else ""
-
-        if not image_tensors:
+        # Process response - extract images
+        try:
+            image_data = response.candidates[0].content.parts[0].inline_data.data
+            pil_image = Image.open(io.BytesIO(image_data)).convert("RGB")
+            result_tensor = self._pil_to_tensor(pil_image)
+            return (result_tensor, "", "")
+        except (AttributeError, IndexError, TypeError) as e:
             raise ValueError(
-                "No valid images were returned by the API. Your request was likely blocked by safety filters "
-                "or the model chose to respond with text only. Try rephrasing your edit instruction."
+                f"No valid images were returned by the API. Your request was likely blocked by safety filters. Error: {e}"
             )
-
-        # Stack all images into a batch tensor
-        batch_tensor = torch.cat(image_tensors, 0)
-        return (batch_tensor, text_response, thoughts)
 
 
 # Node registration
