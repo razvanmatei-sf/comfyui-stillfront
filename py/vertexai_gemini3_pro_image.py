@@ -7,7 +7,7 @@ import numpy as np
 import torch
 from google import genai
 from google.genai import types
-from google.genai.types import GenerateContentConfig, ImageConfig, Part
+from google.genai.types import Part
 from PIL import Image
 
 
@@ -165,29 +165,23 @@ class SFVertexAINanaBananaPro:
 
         # Build generation configuration with image_config for aspect ratio and size
         # Note: image_size is only supported by Nano Banana Pro (gemini-3-pro-image-preview)
-        image_config_kwargs = {"aspect_ratio": aspect_ratio}
         if model == "gemini-3-pro-image-preview":
-            image_config_kwargs["image_size"] = image_size
-
-        print(f"[SF VertexAI Nano Banana Pro] DEBUG: model={model}")
-        print(
-            f"[SF VertexAI Nano Banana Pro] DEBUG: image_config_kwargs={image_config_kwargs}"
-        )
-
-        image_config = ImageConfig(**image_config_kwargs)
-        print(
-            f"[SF VertexAI Nano Banana Pro] DEBUG: ImageConfig created: {image_config}"
-        )
-
-        config = GenerateContentConfig(
-            response_modalities=["TEXT", "IMAGE"],
-            candidate_count=1,
-            seed=seed if seed > 0 else None,
-            image_config=image_config,
-        )
-        print(
-            f"[SF VertexAI Nano Banana Pro] DEBUG: GenerateContentConfig created: {config}"
-        )
+            config = types.GenerateContentConfig(
+                response_modalities=["TEXT", "IMAGE"],
+                seed=seed if seed > 0 else None,
+                image_config=types.ImageConfig(
+                    aspect_ratio=aspect_ratio,
+                    image_size=image_size,
+                ),
+            )
+        else:
+            config = types.GenerateContentConfig(
+                response_modalities=["TEXT", "IMAGE"],
+                seed=seed if seed > 0 else None,
+                image_config=types.ImageConfig(
+                    aspect_ratio=aspect_ratio,
+                ),
+            )
 
         # Call the Gemini API
         try:
