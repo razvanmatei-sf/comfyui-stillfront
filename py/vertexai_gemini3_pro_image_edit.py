@@ -6,8 +6,7 @@ import io
 import numpy as np
 import torch
 from google import genai
-from google.genai import types
-from google.genai.types import Part
+from google.genai.types import GenerateContentConfig, ImageConfig, Modality, Part
 from PIL import Image
 
 
@@ -205,19 +204,19 @@ class SFVertexAINanaBananaProEdit:
         # Build generation configuration with image_config for aspect ratio and size
         # Note: image_size is only supported by Nano Banana Pro (gemini-3-pro-image-preview)
         if model == "gemini-3-pro-image-preview":
-            config = types.GenerateContentConfig(
-                response_modalities=["TEXT", "IMAGE"],
+            config = GenerateContentConfig(
+                response_modalities=[Modality.TEXT, Modality.IMAGE],
                 seed=seed if seed > 0 else None,
-                image_config=types.ImageConfig(
+                image_config=ImageConfig(
                     aspect_ratio=aspect_ratio,
                     image_size=image_size,
                 ),
             )
         else:
-            config = types.GenerateContentConfig(
-                response_modalities=["TEXT", "IMAGE"],
+            config = GenerateContentConfig(
+                response_modalities=[Modality.TEXT, Modality.IMAGE],
                 seed=seed if seed > 0 else None,
-                image_config=types.ImageConfig(
+                image_config=ImageConfig(
                     aspect_ratio=aspect_ratio,
                 ),
             )
