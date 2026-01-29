@@ -41,6 +41,13 @@ class SFVertexAINanaBananaPro:
         "21:9",
     ]
 
+    # Supported image sizes (Nano Banana Pro supports all, Nano Banana only 1K)
+    IMAGE_SIZES = [
+        "1K",
+        "2K",
+        "4K",
+    ]
+
     @classmethod
     def INPUT_TYPES(cls):
         return {
@@ -81,6 +88,13 @@ class SFVertexAINanaBananaPro:
                     {
                         "default": "1:1",
                         "tooltip": "Output image aspect ratio",
+                    },
+                ),
+                "image_size": (
+                    cls.IMAGE_SIZES,
+                    {
+                        "default": "1K",
+                        "tooltip": "Output image size. Nano Banana only supports 1K. Nano Banana Pro supports 1K/2K/4K.",
                     },
                 ),
                 "seed": (
@@ -125,6 +139,7 @@ class SFVertexAINanaBananaPro:
         prompt,
         model,
         aspect_ratio,
+        image_size,
         seed,
     ):
         if not project_id:
@@ -135,20 +150,38 @@ class SFVertexAINanaBananaPro:
         if not prompt.strip():
             raise ValueError("prompt cannot be empty")
 
+        # Validate image_size for Nano Banana (only supports 1K)
+        if model == "gemini-2.5-flash-image" and image_size != "1K":
+            print(
+                f"[SF VertexAI Nano Banana Pro] Warning: Nano Banana (gemini-2.5-flash-image) only supports 1K. Falling back to 1K."
+            )
+            image_size = "1K"
+
         # Initialize the client
         client = genai.Client(vertexai=True, project=project_id, location=location)
 
         # Build contents - just the text prompt for T2I
         contents = [prompt]
 
-        # Build generation configuration with image_config for aspect ratio
-        config = types.GenerateContentConfig(
-            response_modalities=["TEXT", "IMAGE"],
-            seed=seed if seed > 0 else None,
-            image_config=types.ImageConfig(
-                aspect_ratio=aspect_ratio,
-            ),
-        )
+        # Build generation configuration with image_config for aspect ratio and size
+        # Note: image_size is only supported by Nano Banana Pro (gemini-3-pro-image-preview)
+        if model == "gemini-3-pro-image-preview":
+            config = types.GenerateContentConfig(
+                response_modalities=["TEXT", "IMAGE"],
+                seed=seed if seed > 0 else None,
+                image_config=types.ImageConfig(
+                    aspect_ratio=aspect_ratio,
+                    image_size=image_size,
+                ),
+            )
+        else:
+            config = types.GenerateContentConfig(
+                response_modalities=["TEXT", "IMAGE"],
+                seed=seed if seed > 0 else None,
+                image_config=types.ImageConfig(
+                    aspect_ratio=aspect_ratio,
+                ),
+            )
 
         # Call the Gemini API
         try:
