@@ -21,10 +21,10 @@ class SFVertexAINanaBananaProEdit:
     Set inputcount and click "Update inputs" button to add more image slots.
     """
 
-    # Available models
+    # Available models - friendly name (API ID)
     MODELS = [
-        "gemini-2.5-flash-image",  # Nano Banana - stable, 1024px max
-        "gemini-3-pro-image-preview",  # Nano Banana Pro - preview, 4096px max
+        "Nano Banana (gemini-2.5-flash-image)",
+        "Nano Banana Pro (gemini-3-pro-image-preview)",
     ]
 
     # Supported aspect ratios
@@ -79,8 +79,8 @@ class SFVertexAINanaBananaProEdit:
                 "model": (
                     cls.MODELS,
                     {
-                        "default": "gemini-3-pro-image-preview",
-                        "tooltip": "Nano Banana (2.5 flash, stable, 1K only) or Nano Banana Pro (3 pro, preview, up to 4K)",
+                        "default": "Nano Banana Pro (gemini-3-pro-image-preview)",
+                        "tooltip": "Nano Banana: faster, 1K only. Nano Banana Pro: best quality, up to 4K.",
                     },
                 ),
                 "aspect_ratio": (
@@ -177,8 +177,11 @@ class SFVertexAINanaBananaProEdit:
         if not images:
             raise ValueError("At least one image input is required for editing")
 
+        # Extract API model ID from display name
+        api_model = model.split("(")[-1].rstrip(")")
+
         # Validate image_size for Nano Banana (only supports 1K)
-        if model == "gemini-2.5-flash-image" and image_size != "1K":
+        if api_model == "gemini-2.5-flash-image" and image_size != "1K":
             print(
                 f"[SF VertexAI Nano Banana Pro Edit] Warning: Nano Banana (gemini-2.5-flash-image) only supports 1K. Falling back to 1K."
             )
@@ -206,7 +209,7 @@ class SFVertexAINanaBananaProEdit:
         # Build image_config parameters
         # Note: image_size is only supported by Nano Banana Pro (gemini-3-pro-image-preview)
         image_config_params = {"aspect_ratio": aspect_ratio}
-        if "gemini-3-pro" in model:
+        if "gemini-3-pro" in api_model:
             image_config_params["image_size"] = image_size
 
         # Build generation configuration
@@ -219,12 +222,14 @@ class SFVertexAINanaBananaProEdit:
         # Call the Gemini API
         try:
             response = client.models.generate_content(
-                model=model,
+                model=api_model,
                 contents=contents,
                 config=config,
             )
         except Exception as e:
-            raise RuntimeError(f"Nano Banana Edit API call failed ({model}): {str(e)}")
+            raise RuntimeError(
+                f"Nano Banana Edit API call failed ({api_model}): {str(e)}"
+            )
 
         # Check finish reason for errors
         if response.candidates and response.candidates[0].finish_reason:
