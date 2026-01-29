@@ -1,7 +1,7 @@
 [project]
 name = "comfyui-stillfront"
 description = "Custom nodes for ComfyUI including LLM Chat with support for Claude 4.5, Gemini 3, and OpenAI GPT-5 models, plus utility nodes for enhanced workflows"
-version = "1.0.1"
+version = "1.0.2"
 license = { file = "LICENSE" }
 dependencies = [
     "requests>=2.31.0",
