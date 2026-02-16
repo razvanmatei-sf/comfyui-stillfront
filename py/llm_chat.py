@@ -155,8 +155,15 @@ def call_claude_api(
     if response_data.get("error"):
         raise Exception(response_data.get("error").get("message", "Unknown error"))
 
-    # Extract text response
-    return response_data["content"][0]["text"]
+    # Extract text response and token usage
+    text = response_data["content"][0]["text"]
+    usage = response_data.get("usage", {})
+    token_usage = {
+        "input_tokens": usage.get("input_tokens", 0),
+        "output_tokens": usage.get("output_tokens", 0),
+    }
+
+    return text, token_usage
 
 
 def call_gemini_api(
@@ -239,7 +246,13 @@ def call_gemini_api(
     if response_data.get("error"):
         raise Exception(response_data.get("error").get("message", "Unknown error"))
 
-    # Extract text response from Gemini format
+    # Extract text response and token usage from Gemini format
+    usage_metadata = response_data.get("usageMetadata", {})
+    token_usage = {
+        "input_tokens": usage_metadata.get("promptTokenCount", 0),
+        "output_tokens": usage_metadata.get("candidatesTokenCount", 0),
+    }
+
     if "candidates" in response_data and len(response_data["candidates"]) > 0:
         candidate = response_data["candidates"][0]
         if (
@@ -247,7 +260,7 @@ def call_gemini_api(
             and "parts" in candidate["content"]
             and len(candidate["content"]["parts"]) > 0
         ):
-            return candidate["content"]["parts"][0]["text"]
+            return candidate["content"]["parts"][0]["text"], token_usage
 
     raise Exception("No valid response received from Gemini API")
 
@@ -292,8 +305,8 @@ class SFLLMChat:
             },
         }
 
-    RETURN_TYPES = ("STRING",)
-    RETURN_NAMES = ("response",)
+    RETURN_TYPES = ("STRING", "STRING")
+    RETURN_NAMES = ("response", "token_usage")
     FUNCTION = "chat"
     CATEGORY = "Stillfront/LLM"
 
@@ -332,7 +345,7 @@ class SFLLMChat:
 
         # Route to appropriate API based on model
         if model in gemini_models:
-            response = call_gemini_api(
+            response, token_usage = call_gemini_api(
                 api_key=api_key.strip(),
                 model=model,
                 prompt=prompt,
@@ -344,7 +357,7 @@ class SFLLMChat:
                 timeout=timeout,
             )
         else:
-            response = call_claude_api(
+            response, token_usage = call_claude_api(
                 api_key=api_key.strip(),
                 model=model,
                 prompt=prompt,
@@ -356,7 +369,15 @@ class SFLLMChat:
                 timeout=timeout,
             )
 
-        return (response,)
+        input_tokens = token_usage["input_tokens"]
+        output_tokens = token_usage["output_tokens"]
+        total_tokens = input_tokens + output_tokens
+
+        usage_summary = (
+            f"Input: {input_tokens} | Output: {output_tokens} | Total: {total_tokens}"
+        )
+
+        return (response, usage_summary)
 
 
 # Node registration
